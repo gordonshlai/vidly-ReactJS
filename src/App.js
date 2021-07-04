@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Movies from "./components/movies";
@@ -8,20 +9,34 @@ import NotFound from "./components/notFound";
 import NavBar from "./components/navBar";
 import LoginForm from "./components/loginForm";
 import RegisterForm from "./components/registerForm";
+import Logout from "./components/logout";
+import ProtectedRoute from "./components/common/protectedRoute";
+import auth from "./services/authService";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
 function App() {
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    const user = auth.getCurrentUser();
+    setUser(user);
+  }, []);
+
   return (
     <>
       <ToastContainer />
-      <NavBar />
+      <NavBar user={user} />
       <main className="container">
         <Switch>
           <Route path="/register" component={RegisterForm} />
           <Route path="/login" component={LoginForm} />
-          <Route path="/movies/:id" component={MovieForm} />
-          <Route path="/movies" component={Movies} />
+          <Route path="/logout" component={Logout} />
+          <ProtectedRoute path="/movies/:id" component={MovieForm} />
+          <Route
+            path="/movies"
+            render={(props) => <Movies {...props} user={user} />}
+          />
           <Route path="/customers" component={Customers} />
           <Route path="/rentals" component={Rentals} />
           <Route path="/not-found" component={NotFound} />

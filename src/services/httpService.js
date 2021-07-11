@@ -2,6 +2,8 @@ import axios from "axios";
 import logger from "./logService";
 import { toast } from "react-toastify";
 
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+
 /**
  * Intercepter is called before the request passes to the server, or the response passes to the UI.
  */
